@@ -1,0 +1,37 @@
+---
+
+- name: Playbook EIGRP
+
+  hosts: "{{routers_id}}"
+  connection: local
+  become: yes
+  become_method: enable
+
+
+  vars_prompt:
+
+  - name: routers_id
+    prompt: Veuillez rentrer le nom du routeur sur lequel vous voulez ajouter une route EIGRP (Tapez routers si vous voulez ajouter la route sur tous les routeurs)
+    private: no
+
+
+  - name: eigrp_id
+    prompt: Veuillez rentrer l'ID EIGRP que vous voulez créer
+    private: no
+
+
+  tasks:
+  
+  - name: Activer EIGRP
+    ios_config:
+      authorize: yes
+      lines: 
+        - router eigrp {{ eigrp_id }}
+
+  - name: Show routes
+    ios_command:
+      commands: show run | inc router eigrp
+    register: show_run
+
+  - debug: var=show_run.stdout_lines
+

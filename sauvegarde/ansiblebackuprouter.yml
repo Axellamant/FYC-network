@@ -1,0 +1,31 @@
+---
+- name: Playbook back-up pour routeurs
+  hosts: routers
+  connection: local
+  gather_facts: no
+  become: yes
+  become_method: enable
+
+  tasks:
+    - name: Back-up de la configuration des routeurs
+      ios_config:
+        backup: yes
+      register: config_output
+
+    - name: Renommer le back-up
+      copy:
+        src: "{{config_output.backup_path}}"
+        dest: "./backup/{{inventory_hostname}}.config"
+
+    - name: Enlever les lignes en trop pour restauration
+      lineinfile:
+        path: "./backup/{{inventory_hostname}}.config"
+        line: Building configuration...
+        state: absent
+
+    - name: Enlever les lignes en trop pour restauration
+      lineinfile:
+        path: "./backup/{{inventory_hostname}}.config"
+        regexp: 'Current configuration.*'
+        state: absent
+

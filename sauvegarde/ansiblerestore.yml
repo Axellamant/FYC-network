@@ -1,0 +1,13 @@
+---
+- name: Restauration configuration routeur
+  hosts: switches
+  connection: network_cli
+  gather_facts: no
+  become: yes
+  become_method: enable
+
+  tasks:
+    - name: COPY RUNNING CONFIG TO ROUTER
+      command: scp ./backup/{{inventory_hostname}}.config {{inventory_hostname}}:/{{inventory_hostname}}.config
+
+

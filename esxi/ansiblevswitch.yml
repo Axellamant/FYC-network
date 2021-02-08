@@ -1,0 +1,30 @@
+---
+- name: Playbook Creation vSwitch
+
+  hosts: ESXI
+
+  vars:
+    esxi_hostname: 51.159.57.135
+    esxi_username: admin_ansible
+
+  vars_prompt:
+
+    - name: vswitch_name
+      prompt: Veuillez rentrer le nom que vous voulez donner au vSwitch
+      private: no
+
+    - name: esxi_password
+      prompt: Veuillez rentrer le mot de passe de votre ESXI
+
+  tasks: 
+  - name: Add a VMware vSwitch
+    community.vmware.vmware_vswitch:
+      hostname: '{{ esxi_hostname }}'
+      username: '{{ esxi_username }}'
+      password: '{{ esxi_password }}'
+      switch: '{{ vswitch_name }}'
+      mtu: 9000
+      validate_certs: no
+    delegate_to: localhost
+
+

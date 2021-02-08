@@ -1,0 +1,49 @@
+---
+
+- name: Playbook routes OSPF
+
+  hosts: "{{ routers_id }}"
+  connection: local
+  become: yes
+  become_method: enable
+
+
+  vars_prompt:
+
+    - name: routers_id
+      prompt: Veuillez rentrer le nom du routeur sur lequel vous voulez ajouter une route (Tapez routers si vous voulez ajouter la route sur tous les routeurs)
+      private: no
+
+    - name: ospf_id
+      prompt: Veuillez rentrer l'ID OSPF où vous voulez créer votre route
+      private: no
+
+    - name: network
+      prompt: Veuillez rentrer le réseau de votre route
+      private: no
+
+    - name: netmask
+      prompt: Veuillez rentrer le masque inversé de votre route
+      private: no 
+
+    - name: area
+      prompt: Veuillez rentrer l'area de votre route
+      private: no
+
+  tasks:
+  
+    - name: Création de la route
+      ios_config:
+        authorize: yes
+        parents: router ospf {{ospf_id}}
+        lines:
+          - network {{network}} {{netmask}} area {{area}}
+
+    - name: Show routes
+      ios_command:
+        commands: show run | inc router ospf | area
+      register: show_run
+
+    - debug: var=show_run.stdout_lines
+
+

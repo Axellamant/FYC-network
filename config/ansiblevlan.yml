@@ -1,0 +1,39 @@
+---
+
+- name: Playbook creation VLAN
+
+  hosts: switches
+  connection: local
+  become: yes
+  become_method: enable
+
+  vars_prompt:
+
+    - name: vlan_id
+      prompt: Veuillez rentrer l'ID du VLAN que vous voulez créer
+      private: no
+
+    - name: vlan_name
+      prompt: Veuillez rentrer le nom du VLAN que vous voulez créer
+      private: no
+
+  tasks:
+
+    - name: Configure VLAN ID
+      ios_config:
+        lines:
+          - vlan {{ vlan_id }}
+
+    - name: Configure VLAN Name
+      ios_config:
+        lines:
+          - name {{ vlan_name }}
+        parents: vlan {{ vlan_id }}
+
+    - name: Show VLAN
+      ios_command:
+        commands: show vlan brief
+      register: show_vlan
+
+    - debug: var=show_vlan.stdout_lines
+

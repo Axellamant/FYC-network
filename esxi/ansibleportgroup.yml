@@ -1,0 +1,41 @@
+---
+- name: Playbook Creation Portgroup
+
+  hosts: ESXI
+
+  vars:
+    esxi_hostname: 51.159.57.135
+    esxi_username: admin_ansible
+
+  vars_prompt:
+
+    - name: portgroup_name
+      prompt: Veuillez rentrer le nom que vous voulez donner au portgroup
+      private: no
+
+    - name: vswitch_name
+      prompt: Veuillez rentrer le nom du vSwitch que vous voulez attribuer au portgroup
+      private: no
+
+    - name: vlan_id
+      prompt: Veuillez rentrer le VLAN ID que vous voulez attribuer au portgroup
+      private: no
+
+    - name: esxi_password
+      prompt: Veuillez rentrer le mot de passe de votre ESXI
+
+
+  tasks: 
+  - name: Add Portgroup with all settings defined
+    community.vmware.vmware_portgroup:
+      hostname: "{{ esxi_hostname }}"
+      username: "{{ esxi_username }}"
+      password: "{{ esxi_password }}"
+      switch: "{{ vswitch_name }}"
+      portgroup: "{{ portgroup_name }}"
+      vlan_id: "{{ vlan_id }}"
+      cluster_name:
+      validate_certs: no
+    delegate_to: localhost
+
+

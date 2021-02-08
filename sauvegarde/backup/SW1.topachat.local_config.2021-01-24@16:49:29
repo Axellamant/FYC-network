@@ -1,0 +1,114 @@
+Building configuration...
+
+Current configuration : 1688 bytes
+!
+! Last configuration change at 00:00:33 EET Fri Jan 22 2021 by root
+!
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 09695D19160C05435E4D
+!
+username root password 7 002100160B5219575A60
+no aaa new-model
+clock timezone EET 2 0
+no ipv6 cef
+ipv6 multicast rpf use-bgp
+!
+ip domain-name TOPACHAT.local
+ip cef
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 100,110,120
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/1
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 100,110,120
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/2
+ switchport access vlan 100
+ switchport mode access
+ duplex auto
+!
+interface Ethernet0/3
+ switchport access vlan 110
+ switchport mode access
+ duplex auto
+!
+interface Ethernet1/0
+ switchport access vlan 120
+ switchport mode access
+ duplex auto
+!
+interface Ethernet1/1
+ duplex auto
+!
+interface Ethernet1/2
+ duplex auto
+!
+interface Ethernet1/3
+ duplex auto
+!
+interface Vlan100
+ ip address 192.168.100.252 255.255.255.0
+!
+router ospf 1
+ network 192.168.100.0 0.0.0.255 area 1
+ network 192.168.110.0 0.0.0.7 area 1
+ network 192.168.120.0 0.0.0.15 area 1
+!
+ip default-gateway 192.168.100.252
+!
+no ip http server
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+ login local
+line aux 0
+line vty 0 4
+ password 7 06231C3143471B485056
+ login local
+ transport input ssh
+!
+end
